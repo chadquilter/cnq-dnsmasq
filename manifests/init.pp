@@ -103,6 +103,9 @@ class dnsmasq (
   String                        $service_ensure           = 'running',
   Boolean                       $strict_order             = true,
   String                        $tftp_root                = '/var/lib/tftpboot',
+
+  Hash $configs_hash = {},
+  Hash $hosts_hash = {},
 ) {
 
   $oses = load_module_metadata( $module_name )['operatingsystem_support'].map |$i| { $i['operatingsystem'] }
@@ -154,7 +157,7 @@ class dnsmasq (
 
   create_resources(dnsmasq::conf, $configs_hash)
   create_resources(dnsmasq::host, $hosts_hash)
-  
+
 
 
 }
