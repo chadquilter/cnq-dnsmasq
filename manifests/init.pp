@@ -155,9 +155,12 @@ class dnsmasq (
     -> Class[ '::dnsmasq::service' ]
   }
 
+  include ::dnsmasq::params
+
+  validate_hash($configs_hash)
+  validate_hash($hosts_hash)
+  #validate_hash($dhcp_hosts_hash)
+
   create_resources(dnsmasq::conf, $configs_hash)
-  create_resources(dnsmasq::host, $hosts_hash)
-
-
-
+  #create_resources(dnsmasq::host, $hosts_hash)
 }
