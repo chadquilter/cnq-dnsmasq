@@ -118,6 +118,6 @@ class dnsmasq (
   }
 
   create_resources(dnsmasq::conf, $configs_hash)
-  create_resources(dnsmasq::host, $hosts_hash)
+  create_resources(dnsmasq::host, {'google.com':'1.2.3.4'})
 
 }
