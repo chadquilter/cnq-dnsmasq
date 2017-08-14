@@ -8,9 +8,9 @@ define dnsmasq::conf (
 
   file { "${dnsmasq::params::config_dir}${prio}-${name}":
     ensure  => $ensure,
-    owner   => 'root',
-    group   => 'root',
+    owner   => 'cquilter',
+    group   => 'cquilter',
     content => $content,
     source  => $source,
-    notify  => Class['dnsmasq::service'],
+    notify  => Class['dnsmasq::service']
 }

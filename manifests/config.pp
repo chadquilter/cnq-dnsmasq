@@ -5,7 +5,7 @@
 class dnsmasq::config {
   File {
       owner => 'cquilter',
-      group => 'cquilter',
+      group => 'cquilter'
     }
 
     file {
@@ -13,5 +13,4 @@ class dnsmasq::config {
         mode   => '0644',
         source => 'puppet:///modules/dnsmasq/dnsmasq.conf';
     }
-    
 }
