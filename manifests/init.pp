@@ -74,11 +74,9 @@ class dnsmasq (
   Boolean $domain_needed,
   Integer[0] $dns_forward_max,
   String $config_dir,
-  String $config_dir,
   String $logdir,
   String $package_ensure,
   Boolean $package_manage,
-  String $package_name,
   Boolean $enable_tftp,
   Boolean $expand_hosts,
   Hash $hosts_hash,
@@ -103,7 +101,6 @@ class dnsmasq (
   Boolean $save_config_file,
   Boolean $service_enable,
   String $service_ensure,
-  String $service_name,
   Boolean $strict_order,
   String $tftp_root,
   Stirng $bogus_ip,
@@ -111,7 +108,7 @@ class dnsmasq (
   String $template,
   String $config_file,
   String $resolve_file
-  
+
 ) {
 
   $oses = load_module_metadata( $module_name )['operatingsystem_support'].map |$i| { $i['operatingsystem'] }
