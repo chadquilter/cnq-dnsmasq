@@ -275,7 +275,7 @@ class dnsmasq (
       }
     }
 
-    dnsmasq::address { "example-host-dns.int.lan":
+    dnsmasq::address { 'example-host-dns.int.lan':
       ip => '192.168.1.20',
     }
 

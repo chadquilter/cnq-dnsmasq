@@ -4,7 +4,8 @@
 # It ensure the service is running.
 #
 class dnsmasq::service {
-  service { $::dnsmasq::service_name:
+
+  service { $dnsmasq::service_name:
     ensure     => running,
     enable     => true,
     hasstatus  => true,
