@@ -12,4 +12,6 @@ class dnsmasq::config {
       $dnsmasq::params::config_file:
         mode   => '0644',
         source => 'puppet:///modules/dnsmasq/dnsmasq.conf';
+    }
+    
 }
