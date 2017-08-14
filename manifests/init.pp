@@ -152,68 +152,9 @@ class dnsmasq (
     -> Class[ '::dnsmasq::service' ]
   }
 
-
-
-  ## VALIDATION
-
-  validate_bool(
-    $bogus_priv,
-    $dhcp_no_override,
-    $domain_needed,
-    $dnsmasq_hasstatus,
-    $enable_tftp,
-    $expand_hosts,
-    $manage_tftp_root,
-    $no_hosts,
-    $no_negcache,
-    $no_resolv,
-    $save_config_file,
-    $service_enable,
-    $strict_order,
-    $read_ethers,
-    $reload_resolvconf,
-    $restart
-  )
-  validate_hash($config_hash)
-  validate_re($service_ensure,'^(running|stopped)$')
-  if undef != $auth_ttl      { validate_re($auth_ttl,'^[0-9]+') }
-  if undef != $local_ttl     { validate_re($local_ttl,'^[0-9]+') }
-  if undef != $neg_ttl       { validate_re($neg_ttl,'^[0-9]+') }
-  if undef != $max_ttl       { validate_re($max_ttl,'^[0-9]+') }
-  if undef != $max_cache_ttl { validate_re($max_cache_ttl,'^[0-9]+') }
-  if undef != $listen_address and !is_ip_address($listen_address) {
-    fail("Expect IP address for listen_address, got ${listen_address}")
-  }
-
-  # Allow custom ::provider fact to override our provider, but only
-  # if it is undef.
-  $provider_real = empty($::provider) ? {
-    true    => $dnsmasq_package_provider ? {
-      undef   => $::provider,
-      default => $dnsmasq_package_provider,
-    },
-    default => $dnsmasq_package_provider,
-  }
-
-  if $dnsmasq_confdir {
-    file { $dnsmasq_confdir:
-      ensure => 'directory',
-      owner  => 0,
-      group  => 0,
-      mode   => '0755',
-    }
-  }
-
-  if $save_config_file {
-    # let's save the commented default config file after installation.
-    exec { 'save_config_file':
-      command => "cp ${dnsmasq_conffile} ${dnsmasq_conffile}.orig",
-      creates => "${dnsmasq_conffile}.orig",
-      path    => [ '/usr/bin', '/usr/sbin', '/bin', '/sbin', ],
-      require => Package['dnsmasq'],
-      before  => Concat['dnsmasq.conf'],
-    }
-  }
+  create_resources(dnsmasq::conf, $configs_hash)
+  create_resources(dnsmasq::host, $hosts_hash)
+  
 
 
 }
