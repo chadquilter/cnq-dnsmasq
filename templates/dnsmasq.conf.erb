@@ -1,0 +1,5 @@
+<% if scope.lookupvar('dnsmasq::array_bogus_nxdomain') != [] -%>
+<% scope.lookupvar('dnsmasq::array_bogus_nxdomain').each do |bogus_nxdomain| -%>
+bogus-nxdomain=<%= bogus_nxdomain %>
+<% end -%>
+<% end -%>
