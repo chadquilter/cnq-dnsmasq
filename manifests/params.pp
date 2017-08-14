@@ -6,11 +6,4 @@ class dnsmasq::params {
       $resolv_file = '/etc/resolv.conf.dnsmasq'
       $config_dir = '/etc/dnsmasq.d/'
     }
-    default: {
-      case $::operatingsystem {
-        default: {
-          fail("Unsupported platform: ${::osfamily}/${::operatingsystem}")
-        }
-      }
-    }
 }
