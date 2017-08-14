@@ -119,6 +119,5 @@ class dnsmasq (
 
   create_resources(dnsmasq::conf, $configs_hash)
   create_resources(dnsmasq::host, $hosts_hash)
-  create_resources(dnsmasq::dhcp_host, $dhcp_hosts_hash)
 
 }
