@@ -51,8 +51,8 @@
 class dnsmasq (
   String                        $service_name       = 'dnsmasq',
   String                        $package_name       = 'dnsmasq',
-  simplib::Port                 $tcp_listen_port    = 9999,
-  simplib::Netlist              $trusted_nets       = simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] }),
+  Simplib::Port                 $tcp_listen_port    = 9999,
+  Simplib::Netlist              $trusted_nets       = simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] }),
   Boolean                       $enable_pki         = simplib::lookup('simp_options::pki', { 'default_value'         => false }),
   Boolean                       $enable_auditing    = simplib::lookup('simp_options::auditd', { 'default_value'      => false }),
   Variant[Boolean,Enum['simp']] $enable_firewall    = simplib::lookup('simp_options::firewall', { 'default_value'    => false }),
