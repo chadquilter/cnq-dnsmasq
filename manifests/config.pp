@@ -4,8 +4,8 @@
 #
 class dnsmasq::config {
   File {
-      owner => 'cquilter',
-      group => 'cquilter'
+      owner => 'root',
+      group => 'root'
     }
 
     file {
