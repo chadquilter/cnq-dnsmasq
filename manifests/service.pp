@@ -4,8 +4,6 @@
 # It ensure the service is running.
 #
 class dnsmasq::service {
-  assert_private()
-
   service { $::dnsmasq::service_name:
     ensure     => running,
     enable     => true,

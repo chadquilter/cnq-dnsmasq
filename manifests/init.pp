@@ -58,7 +58,60 @@ class dnsmasq (
   Variant[Boolean,Enum['simp']] $enable_firewall    = simplib::lookup('simp_options::firewall', { 'default_value'    => false }),
   Boolean                       $enable_logging     = simplib::lookup('simp_options::syslog', { 'default_value'      => false }),
   Boolean                       $enable_selinux     = simplib::lookup('simp_options::selinux', { 'default_value'     => false }),
-  Boolean                       $enable_tcpwrappers = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false })
+  Boolean                       $enable_tcpwrappers = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false }),
+
+  String $auth_sec_servers,
+  String $auth_server,
+  String $auth_ttl,
+  String $auth_zone,
+  Boolean $bogus_priv,
+  Integer[0] $cache_size,
+  Hash $configs_hash,
+  Boolean $dhcp_boot,
+  String $dhcp_leasefile,
+  Boolean $dhcp_no_override,
+  String $domain,
+  Boolean $domain_needed,
+  Integer[0] $dns_forward_max,
+  String $config_dir,
+  String $config_dir,
+  String $logdir,
+  String $package_ensure,
+  Boolean $package_manage,
+  String $package_name,
+  Boolean $enable_tftp,
+  Boolean $expand_hosts,
+  Hash $hosts_hash,
+  Hash $dhcp_hosts_hash,
+  String $interface,
+  String $listen_address,
+  String $local_ttl,
+  Boolean $manage_tftp_root,
+  String $max_ttl,
+  String $max_cache_ttl,
+  String $neg_ttl,
+  String $no_dhcp_interface,
+  Boolean $no_hosts,
+  Boolean $no_negcache,
+  Boolean $no_resolv,
+  Integer[0] $port,
+  Boolean $read_ethers,
+  Boolean $reload_resolvconf,
+  Boolean $resolv_file,
+  Boolean $restart,
+  String $run_as_user,
+  Boolean $save_config_file,
+  Boolean $service_enable,
+  String $service_ensure,
+  String $service_name,
+  Boolean $strict_order,
+  String $tftp_root,
+  Stirng $bogus_ip,
+  Hash $bogus_tld,
+  String $template,
+  String $config_file,
+  String $resolve_file
+  
 ) {
 
   $oses = load_module_metadata( $module_name )['operatingsystem_support'].map |$i| { $i['operatingsystem'] }
@@ -107,4 +160,14 @@ class dnsmasq (
     Class[ '::dnsmasq::config::tcpwrappers' ]
     -> Class[ '::dnsmasq::service' ]
   }
+
+  anchor { '::dnsmasq::end': require => Class['::dnsmasq::service'], }
+  if $::settings::storeconfigs {
+    File_line <<| tag == 'dnsmasq-host' |>>
+  }
+
+  create_resources(dnsmasq::conf, $configs_hash)
+  create_resources(dnsmasq::host, $hosts_hash)
+  create_resources(dnsmasq::dhcp_host, $dhcp_hosts_hash)
+
 }

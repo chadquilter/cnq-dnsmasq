@@ -3,5 +3,13 @@
 # This class is called from dnsmasq for service config.
 #
 class dnsmasq::config {
-  assert_private()
+  File {
+      owner => 'root',
+      group => 'root',
+    }
+
+    file {
+      $dnsmasq::params::config_file:
+        mode   => '0644',
+        source => 'puppet:///modules/dnsmasq/dnsmasq.conf';
 }
