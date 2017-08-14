@@ -75,7 +75,7 @@ class dnsmasq (
   String                        $dnsmasq_confdir          = '/var/log',
   String                        $dnsmasq_conffile         = '/etc/dnsmasq.d',
   String                        $dnsmasq_hasstatus        = 'true',
-  stirng                        $dnsmasq_logdir           = '/var/log',
+  String                        $dnsmasq_logdir           = '/var/log',
   String                        $dnsmasq_package          = 'dnsmasq',
   String                        $dnsmasq_package_provider = 'undef',
   String                        $dnsmasq_service          = 'dnsmasq',
