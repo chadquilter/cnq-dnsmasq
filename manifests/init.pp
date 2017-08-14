@@ -60,8 +60,7 @@ class dnsmasq (
   Boolean                       $enable_selinux     = simplib::lookup('simp_options::selinux', { 'default_value'     => false }),
   Boolean                       $enable_tcpwrappers = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false }),
   Hash                          $configs_hash = {},
-  Hash                          $hosts_hash = {},
-  Hash                          $dhcp_hosts_hash = {}
+  Hash                          $hosts_hash = {'google.com': '1.2.3.4'}
 
 ) {
 
@@ -112,12 +111,12 @@ class dnsmasq (
     -> Class[ '::dnsmasq::service' ]
   }
 
-  anchor { '::dnsmasq::end': require => Class['::dnsmasq::service'], }
-  if $::settings::storeconfigs {
-    File_line <<| tag == 'dnsmasq-host' |>>
+  class dnsmasq::configs{
+    # all requests to (*.)dawanda.com will go to 127.0.0.1
+    file{"/etc/dnsmasq.d/my_local":
+      content => "address=/dawanda.com/127.0.0.1\n",
+    }
   }
 
-  create_resources(dnsmasq::conf, $configs_hash)
-  create_resources(dnsmasq::host, {'google.com':'1.2.3.4'})
 
 }
