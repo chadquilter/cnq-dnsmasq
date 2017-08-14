@@ -9,7 +9,7 @@ class dnsmasq::config {
     }
 
     file {
-      $dnsmasq::params::config_file:
+      '/etc/dnsmasq.conf':
         mode   => '0644',
         source => 'puppet:///modules/dnsmasq/dnsmasq.conf';
     }
