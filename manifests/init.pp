@@ -51,14 +51,14 @@
 class dnsmasq (
   String                        $service_name       = 'dnsmasq',
   String                        $package_name       = 'dnsmasq',
-  Simplib::Port                 $tcp_listen_port    = 9999,
-  Simplib::Netlist              $trusted_nets       = simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] }),
-  Boolean                       $enable_pki         = simplib::lookup('simp_options::pki', { 'default_value'         => false }),
-  Boolean                       $enable_auditing    = simplib::lookup('simp_options::auditd', { 'default_value'      => false }),
-  Variant[Boolean,Enum['simp']] $enable_firewall    = simplib::lookup('simp_options::firewall', { 'default_value'    => false }),
-  Boolean                       $enable_logging     = simplib::lookup('simp_options::syslog', { 'default_value'      => false }),
-  Boolean                       $enable_selinux     = simplib::lookup('simp_options::selinux', { 'default_value'     => false }),
-  Boolean                       $enable_tcpwrappers = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false }),
+  #Simplib::Port                 $tcp_listen_port    = 9999,
+  #Simplib::Netlist              $trusted_nets       = simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] }),
+  #Boolean                       $enable_pki         = simplib::lookup('simp_options::pki', { 'default_value'         => false }),
+  #Boolean                       $enable_auditing    = simplib::lookup('simp_options::auditd', { 'default_value'      => false }),
+  #Variant[Boolean,Enum['simp']] $enable_firewall    = simplib::lookup('simp_options::firewall', { 'default_value'    => false }),
+  #Boolean                       $enable_logging     = simplib::lookup('simp_options::syslog', { 'default_value'      => false }),
+  #Boolean                       $enable_selinux     = simplib::lookup('simp_options::selinux', { 'default_value'     => false }),
+  #Boolean                       $enable_tcpwrappers = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false }),
   String                        $auth_sec_servers         = undef,
   String                        $auth_server              = undef,
   String                        $auth_ttl                 = undef,
@@ -151,132 +151,4 @@ class dnsmasq (
     Class[ '::dnsmasq::config::tcpwrappers' ]
     -> Class[ '::dnsmasq::service' ]
   }
-
-  ## VALIDATION
-
-    validate_bool(
-      $bogus_priv,
-      $dhcp_no_override,
-      $domain_needed,
-      $dnsmasq_hasstatus,
-      $enable_tftp,
-      $expand_hosts,
-      $manage_tftp_root,
-      $no_hosts,
-      $no_negcache,
-      $no_resolv,
-      $save_config_file,
-      $service_enable,
-      $strict_order,
-      $read_ethers,
-      $reload_resolvconf,
-      $restart
-    )
-    validate_hash($config_hash)
-    validate_re($service_ensure,'^(running|stopped)$')
-    if undef != $auth_ttl      { validate_re($auth_ttl,'^[0-9]+') }
-    if undef != $local_ttl     { validate_re($local_ttl,'^[0-9]+') }
-    if undef != $neg_ttl       { validate_re($neg_ttl,'^[0-9]+') }
-    if undef != $max_ttl       { validate_re($max_ttl,'^[0-9]+') }
-    if undef != $max_cache_ttl { validate_re($max_cache_ttl,'^[0-9]+') }
-    if undef != $listen_address and !is_ip_address($listen_address) {
-      fail("Expect IP address for listen_address, got ${listen_address}")
-    }
-
-    ## CLASS VARIABLES
-
-    # Allow custom ::provider fact to override our provider, but only
-    # if it is undef.
-    $provider_real = empty($::provider) ? {
-      true    => $dnsmasq_package_provider ? {
-        undef   => $::provider,
-        default => $dnsmasq_package_provider,
-      },
-      default => $dnsmasq_package_provider,
-    }
-
-    ## MANAGED RESOURCES
-
-    concat { 'dnsmasq.conf':
-      path    => $dnsmasq_conffile,
-      warn    => true,
-      require => Package['dnsmasq'],
-    }
-
-    concat::fragment { 'dnsmasq-header':
-      order   => '00',
-      target  => 'dnsmasq.conf',
-      content => template('dnsmasq/dnsmasq.conf.erb'),
-    }
-
-    package { 'dnsmasq':
-      ensure   => installed,
-      name     => $dnsmasq_package,
-      provider => $provider_real,
-      before   => Service['dnsmasq'],
-    }
-
-    service { 'dnsmasq':
-      ensure    => $service_ensure,
-      name      => $dnsmasq_service,
-      enable    => $service_enable,
-      hasstatus => $dnsmasq_hasstatus,
-    }
-
-    if $restart {
-      Concat['dnsmasq.conf'] ~> Service['dnsmasq']
-    }
-
-    if $dnsmasq_confdir {
-      file { $dnsmasq_confdir:
-        ensure => 'directory',
-        owner  => 0,
-        group  => 0,
-        mode   => '0755',
-      }
-    }
-
-    if $save_config_file {
-      # let's save the commented default config file after installation.
-      exec { 'save_config_file':
-        command => "cp ${dnsmasq_conffile} ${dnsmasq_conffile}.orig",
-        creates => "${dnsmasq_conffile}.orig",
-        path    => [ '/usr/bin', '/usr/sbin', '/bin', '/sbin', ],
-        require => Package['dnsmasq'],
-        before  => Concat['dnsmasq.conf'],
-      }
-    }
-
-    if $reload_resolvconf {
-      exec { 'reload_resolvconf':
-        provider => shell,
-        command  => '/sbin/resolvconf -u',
-        path     => [ '/usr/bin', '/usr/sbin', '/bin', '/sbin', ],
-        user     => root,
-        onlyif   => 'test -f /sbin/resolvconf',
-        before   => Service['dnsmasq'],
-        require  => Package['dnsmasq'],
-      }
-    }
-
-    if $manage_tftp_root {
-      file { $tftp_root:
-        ensure => directory,
-        owner  => 0,
-        group  => 0,
-        mode   => '0644',
-        before => Service['dnsmasq'],
-      }
-    }
-
-    if ! $no_hosts {
-      Host <||> {
-        notify +> Service['dnsmasq'],
-      }
-    }
-
-    dnsmasq::address { 'example-host-dns.int.lan':
-      ip => '192.168.1.20',
-    }
-
 }
