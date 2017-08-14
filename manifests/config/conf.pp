@@ -7,7 +7,7 @@ define dnsmasq::conf (
 ) {
   include ::dnsmasq
 
-  file { "${config_dir}${prio}-${name}":
+  file { "/etc/dnsmasq.d/10-test":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
