@@ -152,17 +152,7 @@ class dnsmasq (
     -> Class[ '::dnsmasq::service' ]
   }
 
-  concat { 'dnsmasq.conf':
-    path    => $dnsmasq_conffile,
-    warn    => true,
-    require => Package['dnsmasq'],
-  }
 
-  concat::fragment { 'dnsmasq-header':
-    order   => '00',
-    target  => 'dnsmasq.conf',
-    content => template('dnsmasq/dnsmasq.conf.erb'),
-  }
 
   ## VALIDATION
 
