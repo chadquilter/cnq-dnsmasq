@@ -65,7 +65,7 @@ class dnsmasq (
   String                        $auth_zone                = undef,
   Boolean                       $bogus_priv               = true,
   String                        $cache_size               = 1000,
-  hash                          $config_hash              = {},
+  Hash                          $config_hash              = {},
   String                        $dhcp_boot                = undef,
   String                        $dhcp_leasefile           = undef,
   Boolean                       $dhcp_no_override         = false,
