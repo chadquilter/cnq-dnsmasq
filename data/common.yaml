@@ -48,5 +48,5 @@
   dnsmasq::strict_order: true
   dnsmasq::tftp_root: '/var/lib/tftpboot'
   dnsmasq::bogus_ip: '1.2.3.4'
-  dnsmasq::bogus_tld: {}
+  dnsmasq::bogus_tld: {'test.com' : '1.2.3.4'}
   dnsmasq::template: 'dnsmasq/dnsmasq.conf.epp'
